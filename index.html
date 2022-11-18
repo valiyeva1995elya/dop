@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+   <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <button onclick="addNewCard()" class="btnAdd">Add</button>
+    <div class="block">
+        <div class="modalWin">
+            <p>New card</p>
+            <input class="newTitle" type="text" placeholder="Title" name="" id="">
+            <input class="newImage" type="text" placeholder="Image" name="" id="">
+            <input class="newPrice" type="text" placeholder="Price" name="" id="">
+            <input class="newDescription" type="text" placeholder="Description" name="" id=""><br>
+            <button onclick="addCard()">Add</button>
+            <button onclick="cancelCard()">Cancel</button>
+        </div>
+    </div>
+    <div class="cards"></div>
+    <button></button>
+    <script>
+
+        if (localStorage.getItem("cards") == null || localStorage.getItem("cards").length === 2) {
+            getData()
+        } else {
+            makeCardBlocks()
+        }
+
+
+
+
+        function getData() {
+            let xhr = new XMLHttpRequest();
+            let doc = [];
+            xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    JSON.parse(xhr.response).forEach(element => {
+                        doc.push(element);
+
+                    });
+                    makeCardBlocks()
+                }
+            }
+            xhr.open("GET", "https://fakestoreapi.com/products", false);
+            xhr.send();
+
+            localStorage.setItem("cards", JSON.stringify(doc))
+
+        }
+        function makeCardBlocks() {
+            let elCards = document.querySelector(".cards");
+            let cardsAll = JSON.parse(localStorage.getItem("cards"))
+            cardsAll.forEach(element => {
+                elCards.innerHTML += `<div class= "card">
+            <img onclick="deleteCard(${element.id})" class = "delete" src="./img/free-icon-cancel-1055185.png" alt="">
+            <b><p style="text-align: center" class="title">${element.title}</p></b>
+            <img class = "img" src="${element.image}" alt="">
+            <p class="price">price:${element.price}</p>
+            <p class="description">${element.description}</p>
+            </div>
+      `
+            }
+            )
+        }
+       
+
+
+    </script>
+</body>
+
+
+</html>
